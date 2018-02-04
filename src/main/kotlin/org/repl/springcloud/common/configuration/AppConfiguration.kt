@@ -1,0 +1,30 @@
+package org.repl.springcloud.common.configuration
+
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.MongoDbFactory
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+
+@Configuration
+class AppConfiguration {
+
+    //Override the default MongoTemplate bean. Create a custom MongoTemplate to remove the _class field.
+    @Bean
+    fun mongoTemplate(mongoDbFactory: MongoDbFactory,
+                      context: MongoMappingContext): MongoTemplate {
+        val converter = MappingMongoConverter(DefaultDbRefResolver(mongoDbFactory), context)
+        converter.typeMapper = DefaultMongoTypeMapper(null)
+        return MongoTemplate(mongoDbFactory, converter)
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+}

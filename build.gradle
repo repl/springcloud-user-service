@@ -1,0 +1,75 @@
+buildscript {
+	ext {
+		spring_boot_version = '1.5.9.RELEASE'
+		kotlin_version = '1.2.10'
+	}
+	repositories {
+		maven { url "https://repo.spring.io/libs-release" }
+		mavenLocal()
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Required for Kotlin integration
+		classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#kotlin-spring-compiler-plugin
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin' // Required for Kotlin integration
+apply plugin: "kotlin-spring" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#kotlin-spring-compiler-plugin
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'org.repl.springcloud'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+//springBoot {
+//	mainClass = "org.repl.springcloud.UserServiceApplication"
+//}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Edgware.RELEASE'
+    }
+}
+
+dependencies {
+	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+	compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+	// Spring Dependencies
+	compile("org.springframework.boot:spring-boot-starter-web") {
+		exclude module: "spring-boot-starter-tomcat"
+	}
+	compile "org.springframework.boot:spring-boot-starter-jetty"
+	compile "org.springframework.boot:spring-boot-starter-actuator"
+	compile 'org.springframework.cloud:spring-cloud-starter-eureka'
+	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	//compile('org.springframework.boot:spring-boot-starter-data-elasticsearch')
+
+	// Jackson Dependencies
+	compile "com.fasterxml.jackson.core:jackson-annotations:2.9.2"
+	compile "com.fasterxml.jackson.core:jackson-core:2.9.2"
+	compile "com.fasterxml.jackson.core:jackson-databind:2.9.2"
+	runtime "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.2"
+	runtime "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.2"
+	runtime "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2"
+
+	//Apache
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+sourceSets {
+	main.kotlin.srcDirs += 'src/main/kotlin'
+	main.java.srcDirs += 'src/main/java'
+}
