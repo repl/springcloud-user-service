@@ -1,4 +1,4 @@
-package org.defmacro.books.dto
+package org.repl.springcloud.common.dto
 
 public class ServiceResponseError {
     lateinit var code: String

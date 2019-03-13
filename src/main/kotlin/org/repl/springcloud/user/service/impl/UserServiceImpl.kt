@@ -1,7 +1,7 @@
 package org.repl.springcloud.user.service.impl
 
-import org.defmacro.books.dto.ServiceResponse
-import org.defmacro.books.dto.ServiceResponseError
+import org.repl.springcloud.common.dto.ServiceResponse
+import org.repl.springcloud.common.dto.ServiceResponseError
 import org.repl.springcloud.common.dto.IdDto
 import org.repl.springcloud.common.dto.ListViewRequestDto
 import org.repl.springcloud.common.dto.PaginatedListDto
@@ -52,19 +52,37 @@ class UserServiceImpl : UserService {
     }
 
     override fun create(input: UserDto): ServiceResponse<IdDto>? {
-        //TODO: validate input
-        //check whether userhandle, mobile number and email address is in use
+        val response = ServiceResponse<IdDto>()
+        val errors = validateCreateInput(input)
+        if (errors.isNotEmpty()) {
+            response.errors.addAll(errors)
+            response.success = false
+            return response
+        }
         input.id = UUID.randomUUID().toString()
         input.createdDate = Date()
         input.modifiedDate = Date()
         input.password = passwordEncoder.encode(input.password)
         val persistedDto = userDao.create(input)
-        val response = ServiceResponse<IdDto>()
         response.success = true
         val retDto = IdDto()
         retDto.id = persistedDto.id
         response.data = retDto
         return response
+    }
+
+    private fun validateCreateInput(input: UserDto): List<ServiceResponseError> {
+        val errors: MutableList<ServiceResponseError> = mutableListOf<ServiceResponseError>()
+        if (userDao.getByUserHandle(input.userHandle!!) != null) {
+            errors.add(ServiceResponseError("user account with userHandle ${input.userHandle} already exists."))
+        }
+        if (userDao.getByMobile(input.mobile!!) != null) {
+            errors.add(ServiceResponseError("user account with mobile ${input.mobile} already exists."))
+        }
+        if (userDao.getByEmailAddress(input.emailAddress!!) != null) {
+            errors.add(ServiceResponseError("user account with email address ${input.emailAddress} already exists."))
+        }
+        return errors
     }
 
     override fun authenticate(loginDto: LoginDto): ServiceResponse<UserDto>? {

@@ -86,4 +86,28 @@ class UserDaoImpl : UserDao {
             return 0;
     }
     */
+
+    override fun getByMobile(mobile: String): UserDto? {
+        val matchedUsers = mongoTemplate.find(query(where("mobile").`is`(mobile)), UserMdl::class.java)
+        if (matchedUsers.size == 0) {
+            return null
+        }
+        return matchedUsers[0].createDto()
+    }
+
+    override fun getByEmailAddress(emailAddress: String): UserDto? {
+        val matchedUsers = mongoTemplate.find(query(where("emailAddress").`is`(emailAddress)), UserMdl::class.java)
+        if (matchedUsers.size == 0) {
+            return null
+        }
+        return matchedUsers[0].createDto()
+    }
+
+    override fun getByUserId(id: String): UserDto? {
+        val matchedUsers = mongoTemplate.find(query(where("id").`is`(id)), UserMdl::class.java)
+        if (matchedUsers.size == 0) {
+            return null
+        }
+        return matchedUsers[0].createDto()
+    }
 }

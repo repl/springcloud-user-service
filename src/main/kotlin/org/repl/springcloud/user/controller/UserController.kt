@@ -1,7 +1,7 @@
 package org.repl.springcloud.user.controller
 
 import org.apache.commons.lang3.StringUtils
-import org.defmacro.books.dto.ServiceResponse
+import org.repl.springcloud.common.dto.ServiceResponse
 import org.repl.springcloud.common.dto.IdDto
 import org.repl.springcloud.common.dto.ListViewRequestDto
 import org.repl.springcloud.common.dto.PaginatedListDto

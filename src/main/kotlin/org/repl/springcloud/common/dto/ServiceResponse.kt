@@ -1,4 +1,4 @@
-package org.defmacro.books.dto
+package org.repl.springcloud.common.dto
 
 public class ServiceResponse<T> {
     var success: Boolean = false

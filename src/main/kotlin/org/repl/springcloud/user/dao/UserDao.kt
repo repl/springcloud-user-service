@@ -10,4 +10,7 @@ interface UserDao {
     fun getFilteredPaginated(requestDto: ListViewRequestDto): PaginatedListDto<UserDto>
     fun create(model: UserDto): UserDto
     fun getByUserHandle(userHandle: String): UserDto?
+    fun getByMobile(mobile: String): UserDto?
+    fun getByEmailAddress(emailAddress: String): UserDto?
+    fun getByUserId(id: String): UserDto?
 }
